@@ -1,13 +1,23 @@
-'use client';
-
 import React from 'react';
-import { useParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Star, ShoppingBag } from 'lucide-react';
 
-export default function ProductPage() {
-    const params = useParams();
+// This function is required for static export with dynamic routes
+export function generateStaticParams() {
+    // Return a list of possible values for [id]
+    // In a real app, this would fetch from an API or database
+    return [
+        { id: '1' },
+        { id: '2' },
+        { id: '3' },
+    ];
+}
+
+export default async function ProductPage() {
+    // Note: In Next.js 15, params are awaited in the component, but we aren't using the ID 
+    // to fetch specific data here yet (it's using mock data in the JSX). 
+    // If we needed the ID: const { id } = await props.params;
 
     return (
         <main className="min-h-screen bg-[#FAF9F6] pt-44 md:pt-48">

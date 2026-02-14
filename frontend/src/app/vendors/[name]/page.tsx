@@ -1,13 +1,19 @@
-'use client';
-
 import React from 'react';
-import { useParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
-export default function VendorProfilePage() {
-    const params = useParams();
-    const vendorName = Array.isArray(params.name) ? params.name[0] : params.name;
+// This function is required for static export with dynamic routes
+export function generateStaticParams() {
+    return [
+        { name: 'nike' },
+        { name: 'adidas' },
+        { name: 'puma' },
+        { name: 'allbirds' },
+    ];
+}
+
+export default async function VendorProfilePage({ params }: { params: Promise<{ name: string }> }) {
+    const { name: vendorName } = await params;
 
     return (
         <main className="min-h-screen bg-[#FAF9F6] pt-44 md:pt-48">

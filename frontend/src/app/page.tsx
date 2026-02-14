@@ -10,6 +10,7 @@ import PromoPopup from "@/components/home/PromoPopup";
 import { motion } from "framer-motion";
 import { Cpu, Zap, Globe, ArrowRight } from "lucide-react";
 
+import Hover3DCard from "@/components/ui/Hover3DCard";
 import { products } from "@/data/products";
 
 export default function Home() {
@@ -109,17 +110,18 @@ export default function Home() {
               { name: "Recycled PET Suede", desc: "Sustainable style that lasts.", img: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=600" },
               { name: "Organic Cotton", desc: "Pure comfort from nature.", img: "https://images.unsplash.com/photo-1605348532760-6753d2c43329?auto=format&fit=crop&q=80&w=600" }
             ].map((material, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ y: -10 }}
-                className="relative h-[500px] rounded-[32px] overflow-hidden group cursor-pointer"
-              >
-                <img src={material.img} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={material.name} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-10 space-y-2">
-                  <h3 className="text-2xl font-bold text-white uppercase tracking-tight">{material.name}</h3>
-                  <p className="text-white/60 text-sm font-medium">{material.desc}</p>
-                </div>
-              </motion.div>
+              <Hover3DCard key={i} depth={5}>
+                <motion.div
+                  whileHover={{ y: -5 }}
+                  className="relative h-[500px] rounded-[32px] overflow-hidden group cursor-pointer"
+                >
+                  <img src={material.img} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={material.name} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-10 space-y-2">
+                    <h3 className="text-2xl font-bold text-white uppercase tracking-tight">{material.name}</h3>
+                    <p className="text-white/60 text-sm font-medium">{material.desc}</p>
+                  </div>
+                </motion.div>
+              </Hover3DCard>
             ))}
           </div>
         </div>
@@ -128,13 +130,19 @@ export default function Home() {
       {/* Full Width Impact Section */}
       <section className="relative h-[90vh] bg-[#1a1a1a] overflow-hidden flex items-center justify-center text-center px-10 group">
         <div className="absolute inset-0 opacity-40 overflow-hidden">
+          {/* Replaced static image with Particles for 3D effect if available, or keep image as fallback */}
           <img
             src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=1500"
             className="w-full h-full object-cover grayscale scale-110 group-hover:scale-100 transition-transform duration-[3s]"
             alt="Nature Backdrop"
           />
         </div>
-        <div className="relative z-10 space-y-10 max-w-4xl">
+        {/* Add Particles Overlay for "Everywhere" 3D feel */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <SneakerScene />
+        </div>
+
+        <div className="relative z-10 space-y-10 max-w-4xl bg-black/20 backdrop-blur-sm p-10 rounded-3xl border border-white/10">
           <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="space-y-6">
             <h2 className="text-6xl md:text-9xl font-black text-white tracking-tighter leading-none uppercase italic">The Softest <br /> Step on Earth.</h2>
             <p className="text-white/60 text-xl font-bold uppercase tracking-widest">Responsibly Made. Honestly Priced.</p>

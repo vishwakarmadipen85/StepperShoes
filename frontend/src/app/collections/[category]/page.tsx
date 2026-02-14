@@ -1,15 +1,21 @@
-'use client';
-
 import React from 'react';
-import { useParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ProductCard from '@/components/product/ProductCard';
 import { products } from "@/data/products";
 
-export default function CategoryPage() {
-    const params = useParams();
-    const categoryName = Array.isArray(params.category) ? params.category[0] : params.category;
+// This function is required for static export with dynamic routes
+export function generateStaticParams() {
+    return [
+        { category: 'men' },
+        { category: 'women' },
+        { category: 'kids' },
+        { category: 'sale' },
+    ];
+}
+
+export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
+    const { category: categoryName } = await params;
 
     // Filter products based on URL param (simple search)
     const categoryProducts = products.filter(p =>
