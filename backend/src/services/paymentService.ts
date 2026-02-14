@@ -2,7 +2,8 @@ import Stripe from 'stripe';
 import { CommissionService } from './commissionService';
 import Vendor from '../models/Vendor';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripeKey = process.env.STRIPE_SECRET_KEY || 'sk_test_dummy_key_for_deployment_123';
+const stripe = new Stripe(stripeKey, {
     apiVersion: '2025-01-27' as any,
 });
 
