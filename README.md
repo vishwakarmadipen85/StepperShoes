@@ -1,4 +1,4 @@
-# AEROSTEP AI - Enterprise Footwear eCommerce
+# STEPPER SHOES - Enterprise Footwear eCommerce
 
 A production-ready, AI-driven footwear platform with 3D visualization, AR try-on, and real-time inference microservices.
 
