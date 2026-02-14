@@ -1,0 +1,11 @@
+user_id,shoe_type,color_preference,style_score,recommended_product_id
+u1,running,bright,0.8,p101
+u2,lifestyle,dark,0.5,p102
+u3,basketball,vibrant,0.9,p103
+u4,lifestyle,minimal,0.4,p104
+u5,running,neon,0.95,p105
+u6,training,dark,0.7,p106
+u7,basketball,minimal,0.6,p107
+u8,lifestyle,bright,0.85,p108
+u9,running,dark,0.3,p109
+u10,training,vibrant,0.75,p110

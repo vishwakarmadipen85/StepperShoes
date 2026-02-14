@@ -1,0 +1,12 @@
+# Size Prediction Mock Dataset
+# height_cm, weight_kg, current_brand_size, brand_index, recommended_size
+170,65,8,1,8.5
+180,80,10,1,10.2
+160,55,6,2,6.5
+175,75,9,2,9.3
+185,90,11,1,11.5
+155,50,5,2,5.8
+172,68,8.5,1,8.8
+165,60,7,2,7.2
+190,95,12,1,12.5
+150,45,4,2,4.8
