@@ -2,6 +2,9 @@
 
 A production-ready, AI-driven footwear platform with 3D visualization, AR try-on, and real-time inference microservices.
 
+##LINK OF THE WEBSITE 
+https://jocular-centaur-ef899b.netlify.app/
+
 ## tech Stack
 - **Frontend**: Next.js, TypeScript, Tailwind CSS, Framer Motion, React Three Fiber.
 - **Backend**: Node.js, Express, MongoDB, Redis, JWT/RBAC.
