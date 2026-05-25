@@ -22,22 +22,23 @@ const CategoryCarousel = () => {
         <section className="py-10 px-6 md:px-12 bg-white overflow-hidden">
             <div className="flex items-center gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4">
                 {categories.map((cat, i) => (
-                    <motion.div
-                        key={i}
-                        whileHover={{ scale: 1.05 }}
-                        className="flex-shrink-0 snap-start flex flex-col items-center gap-4 group cursor-pointer"
-                    >
-                        <div className={`w-28 h-28 md:w-36 md:h-36 rounded-full ${cat.color} overflow-hidden flex items-center justify-center p-4 transition-transform duration-500 group-hover:rotate-6 shadow-sm`}>
-                            <img
-                                src={cat.img}
-                                alt={cat.name}
-                                className="w-full h-full object-contain mix-blend-multiply drop-shadow-xl"
-                            />
-                        </div>
-                        <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-black/60 group-hover:text-black transition-colors">
-                            {cat.name}
-                        </p>
-                    </motion.div>
+                    <Link href={`/collections/${cat.name.toLowerCase().replace(/\s+/g, '-')}`} key={i}>
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            className="flex-shrink-0 snap-start flex flex-col items-center gap-4 group cursor-pointer"
+                        >
+                            <div className={`w-28 h-28 md:w-36 md:h-36 rounded-full ${cat.color} overflow-hidden flex items-center justify-center p-4 transition-transform duration-500 group-hover:rotate-6 shadow-sm`}>
+                                <img
+                                    src={cat.img}
+                                    alt={cat.name}
+                                    className="w-full h-full object-contain mix-blend-multiply drop-shadow-xl"
+                                />
+                            </div>
+                            <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-black/60 group-hover:text-black transition-colors">
+                                {cat.name}
+                            </p>
+                        </motion.div>
+                    </Link>
                 ))}
             </div>
         </section>

@@ -10,6 +10,29 @@ export const getMyOrders = async (req: any, res: Response, next: NextFunction) =
     }
 };
 
+export const createOrder = async (req: any, res: Response, next: NextFunction) => {
+    try {
+        const { items, totalAmount, shippingAddress } = req.body;
+        
+        if (!items || items.length === 0) {
+            return res.status(400).json({ message: 'No items in order' });
+        }
+
+        const order = await Order.create({
+            user: req.user.id,
+            items,
+            totalAmount,
+            shippingAddress,
+            paymentStatus: 'pending', // This would be updated by Stripe webhook later
+            status: 'pending'
+        });
+
+        res.status(201).json({ status: 'success', order });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const orders = await Order.find().populate('user', 'name email');

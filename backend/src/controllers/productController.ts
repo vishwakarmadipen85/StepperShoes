@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Product from '../models/Product';
+import { SearchService } from '../services/searchService';
 
 import { ProductCatalogService } from '../services/productCatalogService';
 
@@ -22,6 +23,16 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const product = await Product.findById(req.params.id).populate('vendor', 'name email');
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+        res.status(200).json({ product });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getProductBySlug = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const product = await Product.findOne({ slug: req.params.slug }).populate('vendor', 'name email');
         if (!product) return res.status(404).json({ message: 'Product not found' });
         res.status(200).json({ product });
     } catch (error) {
@@ -52,6 +63,19 @@ export const updateProduct = async (req: any, res: Response, next: NextFunction)
 
         product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
         res.status(200).json({ product });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const searchProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const query = req.query.q as string;
+        if (!query) {
+            return res.status(400).json({ message: 'Search query is required' });
+        }
+        const results = await SearchService.searchProducts(query);
+        res.status(200).json(results);
     } catch (error) {
         next(error);
     }

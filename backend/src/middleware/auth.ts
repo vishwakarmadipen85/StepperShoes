@@ -21,6 +21,25 @@ export const protect = async (req: any, res: Response, next: NextFunction) => {
     }
 };
 
+export const optionalProtect = async (req: any, res: Response, next: NextFunction) => {
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.accessToken) {
+        token = req.cookies.accessToken;
+    }
+
+    if (!token) return next();
+
+    try {
+        const decoded: any = jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
+        req.user = await User.findById(decoded.id) || undefined;
+    } catch (error) {
+        // Silent catch: invalid/expired token treated as guest
+    }
+    next();
+};
+
 export const authorize = (...roles: string[]) => {
     return (req: any, res: Response, next: NextFunction) => {
         if (!roles.includes(req.user.role)) {
@@ -29,3 +48,4 @@ export const authorize = (...roles: string[]) => {
         next();
     };
 };
+

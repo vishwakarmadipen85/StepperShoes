@@ -18,10 +18,16 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     const { category: categoryName } = await params;
 
     // Filter products based on URL param (simple search)
-    const categoryProducts = products.filter(p =>
-        p.category.toLowerCase() === categoryName?.toLowerCase() ||
-        p.subcategory.toLowerCase() === categoryName?.toLowerCase()
-    );
+    const categoryProducts = products.filter(p => {
+        const urlCat = categoryName?.toLowerCase() || '';
+        const pCat = p.category.toLowerCase();
+        const pSub = p.subcategory.toLowerCase();
+        
+        return pCat === urlCat || 
+               pSub === urlCat || 
+               urlCat.includes(pSub) || 
+               pSub.includes(urlCat);
+    });
 
     // If no specific matches, just show all for demo purposes (or empty state)
     const displayProducts = categoryProducts.length > 0 ? categoryProducts : products;

@@ -1,112 +1,66 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import {
-    OrbitControls,
-    Environment,
-    ContactShadows,
-    Float,
-    PerspectiveCamera,
-    Stars
-} from '@react-three/drei';
-import * as THREE from 'three';
-
-function Shoe({ position = [0, 0, 0], ...props }: any) {
-    const meshRef = useRef<THREE.Group>(null);
-    const [hovered, setHover] = useState(false);
-
-    useFrame((state) => {
-        if (meshRef.current) {
-            const t = state.clock.getElapsedTime();
-            // Gentle floating rotation
-            meshRef.current.rotation.set(
-                Math.cos(t / 4) / 8,
-                Math.sin(t / 3) / 8 + (hovered ? state.clock.elapsedTime * 0.5 : 0),
-                -0.2 - (1 + Math.sin(t / 1.5)) / 20
-            );
-            // Floating height
-            meshRef.current.position.y = (1 + Math.sin(t / 1.5)) / 10 + (hovered ? 0.2 : 0);
-        }
-    });
-
-    return (
-        <group
-            ref={meshRef}
-            position={position}
-            {...props}
-            onPointerOver={() => setHover(true)}
-            onPointerOut={() => setHover(false)}
-        >
-            <mesh castShadow receiveShadow>
-                {/* Abstract shoe representation using primitive shapes for a futuristic look until real model loads */}
-                <boxGeometry args={[0.8, 0.4, 2]} />
-                <meshStandardMaterial
-                    color={hovered ? "#ff4d4d" : "#ffffff"}
-                    roughness={0.1}
-                    metalness={0.8}
-                    emissive={hovered ? "#ff0000" : "#000000"}
-                    emissiveIntensity={0.2}
-                />
-            </mesh>
-            {/* Sole */}
-            <mesh position={[0, -0.25, 0]} castShadow receiveShadow>
-                <boxGeometry args={[0.85, 0.1, 2.05]} />
-                <meshStandardMaterial color="#111" />
-            </mesh>
-        </group>
-    );
-}
+import React, { useState, useRef } from 'react';
+import { ZoomIn } from 'lucide-react';
 
 export default function SneakerScene() {
+    const [isHovering, setIsHovering] = useState(false);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const imageRef = useRef<HTMLImageElement>(null);
+
+    // We use the reliable Unsplash image that is already known to work on your network
+    const imageUrl = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop";
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!imageRef.current) return;
+        const { left, top, width, height } = imageRef.current.getBoundingClientRect();
+        
+        // Calculate mouse position as a percentage (0 to 100)
+        let x = ((e.clientX - left) / width) * 100;
+        let y = ((e.clientY - top) / height) * 100;
+        
+        // Clamp values to keep background within bounds
+        x = Math.max(0, Math.min(100, x));
+        y = Math.max(0, Math.min(100, y));
+        
+        setMousePos({ x, y });
+    };
+
     return (
-        <div className="h-full w-full absolute inset-0 pointer-events-none">
-            <Canvas shadows dpr={[1, 2]}>
-                <PerspectiveCamera makeDefault position={[0, 0, 4]} fov={50} />
+        <div 
+            className="h-full w-full absolute inset-0 z-10 bg-white flex flex-col items-center justify-center overflow-hidden cursor-crosshair"
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+            onMouseMove={handleMouseMove}
+        >
+            {/* Base Image */}
+            <img 
+                ref={imageRef}
+                src={imageUrl}
+                alt="Product View"
+                className={`max-w-[80%] max-h-[80%] object-contain drop-shadow-xl transition-opacity duration-200 ${isHovering ? 'opacity-0' : 'opacity-100'}`}
+                draggable={false}
+            />
 
-                {/* Mood Lighting */}
-                <ambientLight intensity={0.5} />
-                <spotLight
-                    position={[10, 10, 10]}
-                    angle={0.15}
-                    penumbra={1}
-                    intensity={2}
-                    castShadow
-                    shadow-mapSize={[1024, 1024]}
+            {/* Magnified Image Overlay (Flipkart Style Zoom) */}
+            {isHovering && (
+                <div 
+                    className="absolute inset-0 z-20 pointer-events-none"
+                    style={{
+                        backgroundImage: `url(${imageUrl})`,
+                        backgroundPosition: `${mousePos.x}% ${mousePos.y}%`,
+                        backgroundSize: '200%', // 2x Zoom level
+                        backgroundRepeat: 'no-repeat'
+                    }}
                 />
-                <pointLight position={[-10, -10, -10]} intensity={1} color="#4400ff" />
+            )}
 
-                <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-
-                <Float
-                    speed={2}
-                    rotationIntensity={1}
-                    floatIntensity={1}
-                    floatingRange={[-0.1, 0.1]}
-                >
-                    <Shoe />
-                </Float>
-
-                <Environment preset="city" />
-
-                <ContactShadows
-                    position={[0, -1.5, 0]}
-                    opacity={0.6}
-                    scale={10}
-                    blur={2.5}
-                    far={4}
-                    color="#000000"
-                />
-
-                <OrbitControls
-                    enableZoom={false}
-                    enablePan={false}
-                    minPolarAngle={Math.PI / 3}
-                    maxPolarAngle={Math.PI / 1.5}
-                    autoRotate
-                    autoRotateSpeed={0.5}
-                />
-            </Canvas>
+            {/* Instructions */}
+            <div className="absolute bottom-8 flex gap-2 pointer-events-none z-30 transition-opacity duration-300 opacity-100">
+                <div className="bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-xl flex items-center gap-3 border border-gray-100 text-black">
+                    <ZoomIn size={16} /> Hover to Zoom & Pan
+                </div>
+            </div>
         </div>
     );
 }

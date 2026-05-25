@@ -1,153 +1,156 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from './models/Product';
+import Vendor from './models/Vendor';
+import User from './models/User';
 
 dotenv.config();
 
-const products = [
+const baseProducts = [
     {
         name: "AERO-X1 GENESIS",
+        slug: "aero-x1-genesis",
         description: "The peak of performance engineering. Features reactive carbon-fiber plates and biometric-adaptive cushioning.",
         price: 249.99,
         category: "performance",
-        stock: 50,
         images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.9,
-        ai_tags: ["reactive", "carbon-fiber", "biometric"]
+        ratings: [], // Will populate properly if needed later
+        averageRating: 4.9,
+        aiMetadata: {
+            fitScore: 98,
+            popularity: 100,
+            forecastedDemand: 500
+        }
     },
     {
         name: "NEBULA FLOW",
+        slug: "nebula-flow",
         description: "Minimalist aesthetic meets maximum comfort. Designed for the urban explorer.",
         price: 159.99,
         category: "lifestyle",
-        stock: 120,
         images: ["https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.7,
-        ai_tags: ["minimalist", "breathable", "vibrant"]
+        averageRating: 4.7,
+        aiMetadata: {
+            fitScore: 95,
+            popularity: 80,
+            forecastedDemand: 300
+        }
     },
     {
         name: "TITAN HOOP",
+        slug: "titan-hoop",
         description: "Engineered for explosive verticality and lateral stability on the court.",
         price: 189.99,
         category: "basketball",
-        stock: 35,
         images: ["https://images.unsplash.com/photo-1605348532760-6753d2c43329?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.8,
-        ai_tags: ["explosive", "stability", "court-grip"]
+        averageRating: 4.8,
+        aiMetadata: { fitScore: 90, popularity: 75, forecastedDemand: 250 }
     },
     {
         name: "CYBER PULSE",
+        slug: "cyber-pulse",
         description: "Neon-infused style with integrated LED sync technology. The future of streetware.",
         price: 199.99,
         category: "lifestyle",
-        stock: 25,
         images: ["https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.6,
-        ai_tags: ["exclusive", "neon", "tech-wear"]
+        averageRating: 4.6,
+        aiMetadata: { fitScore: 88, popularity: 90, forecastedDemand: 400 }
     },
     {
         name: "ZENITH RUNNER",
+        slug: "zenith-runner",
         description: "Ultra-lightweight racer built for breaking personal records.",
         price: 219.99,
         category: "performance",
-        stock: 40,
         images: ["https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.9,
-        ai_tags: ["ultralight", "racing", "propulsion"]
+        averageRating: 4.9,
+        aiMetadata: { fitScore: 96, popularity: 85, forecastedDemand: 350 }
     },
     {
         name: "ORBIT CHILL",
+        slug: "orbit-chill",
         description: "Recovery slide with AI-mapped pressure relief zones.",
         price: 79.99,
         category: "lifestyle",
-        stock: 200,
         images: ["https://images.unsplash.com/photo-1603808033192-082d6919d3e1?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.5,
-        ai_tags: ["recovery", "ergonomic", "plush"]
-    },
-    {
-        name: "VOLT TRAINER",
-        description: "Versatile gym sneaker for high-intensity interval training.",
-        price: 139.99,
-        category: "training",
-        stock: 80,
-        images: ["https://images.unsplash.com/photo-1514989940723-e8e51635b782?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.7,
-        ai_tags: ["versatile", "hiit", "durable"]
-    },
-    {
-        name: "APEX CLIMB",
-        description: "Rugged outdoor hybrid for technical trails and rocky terrain.",
-        price: 169.99,
-        category: "outdoor",
-        stock: 60,
-        images: ["https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.8,
-        ai_tags: ["rugged", "waterproof", "all-terrain"]
-    },
-    {
-        name: "STEALTH VOID",
-        description: "All-black tactical silhouette with impact-absorbing soles.",
-        price: 179.99,
-        category: "lifestyle",
-        stock: 45,
-        images: ["https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.6,
-        ai_tags: ["tactical", "shadow", "impact"]
-    },
-    {
-        name: "NOVA BLAST",
-        description: "Colorful, high-energy running shoe for daily mileage.",
-        price: 149.99,
-        category: "performance",
-        stock: 90,
-        images: ["https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.7,
-        ai_tags: ["daily", "cushioned", "breathable"]
-    },
-    {
-        name: "ECLIPSE VELOCITY",
-        description: "Speed-focused design with an aerodynamic upper.",
-        price: 229.99,
-        category: "performance",
-        stock: 30,
-        images: ["https://images.unsplash.com/photo-1515955656352-a1fe3ff2115e?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.9,
-        ai_tags: ["aerodynamic", "sprint", "lightweight"]
-    },
-    {
-        name: "PRISM STRIDE",
-        description: "Dynamic color-shifting material that reacts to movement.",
-        price: 209.99,
-        category: "lifestyle",
-        stock: 50,
-        images: ["https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&q=80&w=1000"],
-        vendor: "AEROSTEP AI",
-        ratings: 4.8,
-        ai_tags: ["color-shift", "dynamic", "bold"]
+        averageRating: 4.5,
+        aiMetadata: { fitScore: 92, popularity: 95, forecastedDemand: 600 }
     }
 ];
 
-const seedDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI || '');
-        console.log("Connected to MongoDB for seeding...");
+// Helper to generate variants for a product
+const generateVariants = (baseSku: string) => {
+    const sizes = [7, 8, 9, 10, 11, 12];
+    const colors = [
+        { name: "Black", hex: "#000000" },
+        { name: "White", hex: "#FFFFFF" }
+    ];
+    
+    const variants = [];
+    for (const size of sizes) {
+        for (const color of colors) {
+            variants.push({
+                sku: `${baseSku}-${size}-${color.name.toUpperCase().substring(0, 3)}`,
+                size: size,
+                color: color,
+                stock: Math.floor(Math.random() * 50) + 10 // Random stock between 10-60
+            });
+        }
+    }
+    return variants;
+};
 
+export const seedDatabase = async () => {
+    try {
         await Product.deleteMany({});
-        await Product.insertMany(products);
+        await Vendor.deleteMany({});
+        await User.deleteMany({});
+
+        // Create a default vendor user
+        const vendorUser = await User.create({
+            name: "AEROSTEP Official",
+            email: "vendor@aerostep.ai",
+            password: "password123",
+            role: "vendor",
+            isVerified: true
+        });
+
+        // Create a default vendor profile
+        const defaultVendor = await Vendor.create({
+            userId: vendorUser._id,
+            businessName: "AEROSTEP AI",
+            gstNumber: "22AAAAA0000A1Z5",
+            isApproved: true,
+            kycStatus: 'approved',
+            payoutDetails: {
+                bankName: "HDFC Bank",
+                ifscCode: "HDFC0001234",
+                accountNumber: "50100012345678"
+            }
+        });
+
+        // Add vendor and variants to products
+        const productsWithDetails = baseProducts.map(p => ({
+            ...p,
+            vendor: defaultVendor._id,
+            isApproved: true,
+            variants: generateVariants(p.slug.toUpperCase())
+        }));
+
+        await Product.insertMany(productsWithDetails);
 
         console.log("✅ Database Seeded Successfully!");
+    } catch (error) {
+        console.error("❌ Seeding failed:", error);
+        throw error;
+    }
+};
+
+const runStandalone = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/stepper');
+        console.log("Connected to MongoDB for seeding...");
+        await seedDatabase();
         process.exit(0);
     } catch (error) {
         console.error("❌ Seeding failed:", error);
@@ -155,4 +158,8 @@ const seedDB = async () => {
     }
 };
 
-seedDB();
+// Check if run directly via ts-node
+if (require.main === module) {
+    runStandalone();
+}
+

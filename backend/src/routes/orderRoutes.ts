@@ -5,6 +5,7 @@ import * as orderController from '../controllers/orderController';
 const router = Router();
 
 router.get('/my-orders', protect, orderController.getMyOrders);
+router.post('/', protect, orderController.createOrder);
 router.get('/all', protect, authorize('admin'), orderController.getAllOrders);
 router.get('/:id', protect, orderController.getOrderById);
 router.patch('/:id/status', protect, authorize('admin'), orderController.updateOrderStatus);

@@ -15,6 +15,7 @@ import productRoutes from './routes/productRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import orderRoutes from './routes/orderRoutes';
 import vendorRoutes from './routes/vendorRoutes';
+import cartRoutes from './routes/cartRoutes';
 
 // Middlewares
 app.use(helmet());
@@ -36,6 +37,7 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/vendors', vendorRoutes);
+app.use('/api/v1/cart', cartRoutes);
 
 // Health Check
 app.get('/health', (req: Request, res: Response) => {

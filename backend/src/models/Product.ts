@@ -7,9 +7,12 @@ export interface IProduct extends Document {
     category: string;
     vendor: mongoose.Types.ObjectId;
     images: string[];
-    sizes: number[];
-    colors: { name: string, hex: string }[];
-    stock: number;
+    variants: {
+        sku: string;
+        size: number;
+        color: { name: string; hex: string };
+        stock: number;
+    }[];
     ratings: { user: mongoose.Types.ObjectId, score: number, comment: string }[];
     averageRating: number;
     slug: string;
@@ -32,12 +35,15 @@ const ProductSchema: Schema = new Schema({
     discountPrice: { type: Number },
     isApproved: { type: Boolean, default: false },
     images: [{ type: String }],
-    sizes: [{ type: Number }],
-    colors: [{
-        name: { type: String },
-        hex: { type: String }
+    variants: [{
+        sku: { type: String, required: true },
+        size: { type: Number, required: true },
+        color: {
+            name: { type: String },
+            hex: { type: String }
+        },
+        stock: { type: Number, default: 0, min: 0 }
     }],
-    stock: { type: Number, default: 0 },
     ratings: [{
         user: { type: Schema.Types.ObjectId, ref: 'User' },
         score: { type: Number, min: 1, max: 5 },
