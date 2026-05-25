@@ -1,35 +1,74 @@
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5000/api/v1}
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:-pk_test_placeholder}
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+      - NODE_ENV=production
     depends_on:
       - backend
+    restart: unless-stopped
 
   backend:
     build: ./backend
     ports:
       - "5000:5000"
+    env_file:
+      - ./backend/.env
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/aerostep
+      - NODE_ENV=production
+      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/aerostep}
       - REDIS_URL=redis://redis:6379
+      - AI_SERVICE_URL=http://ai-service:8000
+      - MEILISEARCH_HOST=http://meilisearch:7700
+      - CLIENT_URL=${CLIENT_URL:-http://localhost:3000}
     depends_on:
       - mongodb
       - redis
+      - meilisearch
+      - ai-service
+    restart: unless-stopped
 
   ai-service:
     build: ./ai-service
     ports:
       - "8000:8000"
+    environment:
+      - BACKEND_URL=http://backend:5000
+    restart: unless-stopped
 
   mongodb:
-    image: mongo:latest
+    image: mongo:7
+    volumes:
+      - mongo_data:/data/db
     ports:
       - "27017:27017"
+    restart: unless-stopped
 
   redis:
-    image: redis:alpine
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
     ports:
       - "6379:6379"
+    restart: unless-stopped
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.6
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_KEY:-masterKey}
+      - MEILI_ENV=production
+    volumes:
+      - meilisearch_data:/meili_data
+    ports:
+      - "7700:7700"
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+  redis_data:
+  meilisearch_data:
