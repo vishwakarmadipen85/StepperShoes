@@ -1,10 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import Image from 'next/image';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 
 export default function AboutPage() {
+    const [imgError, setImgError] = useState(false);
+
     return (
         <main className="min-h-screen bg-[#FAF9F6] pt-44 md:pt-48">
             <Navbar />
@@ -15,7 +18,22 @@ export default function AboutPage() {
                 </p>
                 
                 <div className="aspect-video bg-gray-200 rounded-3xl overflow-hidden mb-16 relative">
-                    <img src="https://images.unsplash.com/photo-1552346154-21d32810baa3?auto=format&fit=crop&q=80&w=1200" alt="Stepper team" className="w-full h-full object-cover" />
+                    {imgError ? (
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white gap-4">
+                            <span className="text-6xl">👟</span>
+                            <p className="text-xl font-bold tracking-widest uppercase">Stepper Team</p>
+                            <p className="text-gray-400 text-sm">Crafting the future of footwear</p>
+                        </div>
+                    ) : (
+                        <Image
+                            src="https://images.unsplash.com/photo-1552346154-21d32810baa3?auto=format&fit=crop&q=80&w=1200"
+                            alt="Stepper team"
+                            fill
+                            className="object-cover"
+                            onError={() => setImgError(true)}
+                            unoptimized
+                        />
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-left mb-16">
