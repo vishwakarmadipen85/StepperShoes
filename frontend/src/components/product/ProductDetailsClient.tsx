@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import { Star, Heart, Truck, Check, Plus, Box, ArrowLeft, RefreshCcw } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useUI } from '@/context/UIContext';
-import SneakerScene from '@/components/canvas/SneakerScene';
-import AppCanvas from '@/components/canvas/Canvas';
-import ShoeModel from '@/components/canvas/ShoeModel';
+import dynamic from 'next/dynamic';
+
+const SneakerScene = dynamic(() => import('@/components/canvas/SneakerScene'), { ssr: false });
+const AppCanvas = dynamic(() => import('@/components/canvas/Canvas'), { ssr: false });
+const ShoeModel = dynamic(() => import('@/components/canvas/ShoeModel'), { ssr: false });
 import { useWishlistStore } from '@/store/useWishlistStore';
 import SizeAdvisorModal from '@/components/product/SizeAdvisorModal';
 import Link from 'next/link';

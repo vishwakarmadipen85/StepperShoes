@@ -7,7 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import CartDrawer from "@/components/layout/CartDrawer";
 import AuthModal from "@/components/layout/AuthModal";
 import ChatWidget from "@/components/ui/ChatWidget";
-import Global3DBackground from "@/components/canvas/Global3DBackground";
+import Global3DBackground from '@/components/canvas/Global3DBackgroundLoader';
 
 const inter = Inter({ subsets: ["latin"] });
 

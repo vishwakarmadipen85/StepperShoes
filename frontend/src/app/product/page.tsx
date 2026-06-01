@@ -3,7 +3,9 @@
 import React, { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import SneakerScene from '@/components/canvas/SneakerScene';
+import dynamic from 'next/dynamic';
+
+const SneakerScene = dynamic(() => import('@/components/canvas/SneakerScene'), { ssr: false });
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Shield, Info, ArrowRight } from 'lucide-react';
 
